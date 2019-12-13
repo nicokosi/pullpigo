@@ -10,11 +10,12 @@ import (
 )
 
 func main() {
-	repo := parseFlags()
-	fmt.Printf("GitHub repository '%s'", repo)
-	println()
-
-	events := githubEvents(repo)
+	config := parseFlags()
+	fmt.Printf("GitHub repository '%s'", config.repo)
+	if len(config.token) > 0 {
+		println(" (token provided)")
+	}
+	events := githubEvents(config)
 
 	eventsByAuthor := make(map[actor]int)
 	for _, event := range events {
@@ -26,16 +27,21 @@ func main() {
 	}
 }
 
-// Parse command line arguments to retrieve repository name
-func parseFlags() string {
+type config struct {
+	repo, token string
+}
+
+// Parse command line arguments to retrieve the configuration
+func parseFlags() config {
 	repo := flag.String("repo", "", "a GitHub repository (i.e. 'nicokosi/pullpigo')")
+	token := flag.String("token", "", "an optional GitHub token")
 	flag.Parse()
-	return *repo
+	return config{*repo, *token}
 }
 
 // Retrieve events from GitHub API
-func githubEvents(repo string) []rawEvent {
-	url := fmt.Sprintf("https://api.github.com/repos/%v/events?access_token=&page=1", repo)
+func githubEvents(config config) []rawEvent {
+	url := fmt.Sprintf("https://api.github.com/repos/%v/events?access_token=%v&page=1", config.repo, config.token)
 	resp, getErr := http.Get(url)
 	if getErr != nil {
 		panic(getErr)
