@@ -13,8 +13,9 @@ func main() {
 	config := parseFlags()
 	fmt.Printf("GitHub repository '%s'", config.repo)
 	if len(config.token) > 0 {
-		println(" (token provided)")
+		print(" (token provided)")
 	}
+	println()
 	events := githubEvents(config)
 
 	eventsByAuthor := make(map[actor]int)
