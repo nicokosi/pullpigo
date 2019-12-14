@@ -8,28 +8,24 @@ Pullpigo is a command-line that displays Pull Request statistics for GitHub repo
 
 ## Run
 
-Either:
+Via the [`go command`](https://golang.org/cmd/go/):
 
-    go run pullpigo.go -repo=nicokosi/pullpigo
+    go run pullpigo.go --repo=nicokosi/pullpigo
 
-Or if `go build` has already been called:
+Or via the executable previously generated:
 
-    ./pullpigo -repo=nicokosi/pullpigo
+    ./pullpigo --repo=nicokosi/pullpigo
 
-If an [access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) is required:
+For instance, here is an output example for the GitHub repository https://github.com/vidal-community/atom-jaxb:
 
-    ./pullpigo -repo=nicokosi/pullpigo -token=$GITHUB_ACCESS_TOKEN
-
-For instance, here is output example for the GitHub repository https://github.com/vidal-community/atom-jaxb:
-
-    ./pullpigo -repo=vidal-community/atom-jaxb
+    ./pullpigo --repo=vidal-community/atom-jaxb
     GitHub repository 'vidal-community/atom-jaxb'
     1 events created by fchetouani
     6 events created by AElMehdiVidal
     3 events created by jcgay
     2 events created by amairi
 
-Display the "usage" (the available command options):
+The available command options can be listed this way:
 
     ./pullpigo --help
 
