@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -37,6 +38,10 @@ func parseFlags() config {
 	repo := flag.String("repo", "", "a GitHub repository (i.e. 'nicokosi/pullpigo')")
 	token := flag.String("token", "", "an optional GitHub token")
 	flag.Parse()
+	if len(*repo) == 0 {
+		println("The 'repo' option is mandatory")
+		os.Exit(1)
+	}
 	return config{*repo, *token}
 }
 
