@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -19,14 +20,53 @@ func main() {
 	println()
 	events := githubEvents(config)
 
-	eventsByAuthor := make(map[actor]int)
+	eventsByAuthor := make(map[actor][]rawEvent)
+
 	for _, event := range events {
-		eventsByAuthor[event.Actor]++
+		eventsByAuthor[event.Actor] = append(eventsByAuthor[event.Actor], event)
 	}
-	for author, eventNumber := range eventsByAuthor {
-		fmt.Printf("  %v events created by %s", eventNumber, author.Login)
-		println()
+	println("Pull requests")
+	println(
+		eventMessage(
+			"\topened per author",
+			func(event rawEvent) bool {
+				return event.pullRequestOpened()
+			},
+			eventsByAuthor))
+	println(
+		eventMessage(
+			"\tcommented per author",
+			func(event rawEvent) bool {
+				return event.pullRequestComment()
+			},
+			eventsByAuthor))
+	println(
+		eventMessage(
+			"\tclosed per author",
+			func(event rawEvent) bool {
+				return event.pullRequestClosed()
+			},
+			eventsByAuthor))
+
+}
+
+type eventPredicate = func(event rawEvent) bool
+
+func eventMessage(message string, fn eventPredicate, eventsByAuthor map[actor][]rawEvent) string {
+	var buffer bytes.Buffer
+	buffer.WriteString(message)
+	for actor, events := range eventsByAuthor {
+		count := 0
+		for _, event := range events {
+			if fn(event) {
+				count++
+			}
+		}
+		if count > 0 {
+			fmt.Fprintf(&buffer, "\n\t\t%s: %v", actor.Login, count)
+		}
 	}
+	return buffer.String()
 }
 
 type config struct {
@@ -78,4 +118,16 @@ type rawEvent struct {
 	Payload   payload   `json:"payload"`
 	EventType string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+func (event rawEvent) pullRequestClosed() bool {
+	return event.EventType == "PullRequestEvent" && event.Payload.Action == "closed"
+}
+
+func (event rawEvent) pullRequestOpened() bool {
+	return event.EventType == "PullRequestEvent" && event.Payload.Action == "opened"
+}
+
+func (event rawEvent) pullRequestComment() bool {
+	return event.EventType == "PullRequestReviewCommentEvent" && event.Payload.Action == "created"
 }
