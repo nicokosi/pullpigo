@@ -20,10 +20,13 @@ For instance, here is an output example for the GitHub repository https://github
 
     ./pullpigo --repo=vidal-community/atom-jaxb
     GitHub repository 'vidal-community/atom-jaxb'
-    1 events created by fchetouani
-    6 events created by AElMehdiVidal
-    3 events created by jcgay
-    2 events created by amairi
+    Pull requests
+        opened per author
+            amairi: 1
+        commented per author
+            AElMehdiVidal: 1
+            jcgay: 1
+        closed per author
 
 The available command options can be listed this way:
 
