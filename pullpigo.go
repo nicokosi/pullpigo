@@ -87,17 +87,26 @@ func parseFlags() config {
 
 // Retrieve events from GitHub API
 func githubEvents(config config) []rawEvent {
-	url := fmt.Sprintf("https://api.github.com/repos/%v/events?access_token=%v&page=1", config.repo, config.token)
-	resp, getErr := http.Get(url)
-	if getErr != nil {
-		panic(getErr)
+	var events []rawEvent
+	page := 1
+	for ; page <= 10; page++ {
+		url := fmt.Sprintf("https://api.github.com/repos/%v/events?access_token=%v&page=%v", config.repo, config.token, page)
+		resp, getErr := http.Get(url)
+		if getErr != nil {
+			panic(getErr)
+		}
+		defer resp.Body.Close()
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			panic(err)
+		}
+		pageEvents := decodeEvents(bodyBytes)
+		if len(pageEvents) == 0 {
+			break
+		}
+		events = append(events, pageEvents...)
 	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	return decodeEvents(bodyBytes)
+	return events
 }
 
 // Decode events from GitHub API
