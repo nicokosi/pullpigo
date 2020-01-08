@@ -1,7 +1,10 @@
 package main
 
 import (
+	"math/rand"
+	"reflect"
 	"testing"
+	"testing/quick"
 	"time"
 )
 
@@ -45,4 +48,48 @@ func Test_GithubEvents_can_return_a_single_event_PullRequestEvent(t *testing.T) 
 		t.Errorf("Unexpected event")
 	}
 
+}
+
+func TestCounterMessageShouldBePrintedIfAtLeastAPullRequestEventOccured(t *testing.T) {
+	f := func(title string, eventsByAuthor map[actor][]rawEvent) bool {
+		message := eventMessage(title, func(rawEvent) bool { return true }, eventsByAuthor)
+		if len(eventsByAuthor) > 0 {
+			return len(message) > len(title)
+		}
+		return true
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+func TestCounterMessageShouldNotBePrintedIfNoPullRequestEventOccured(t *testing.T) {
+	f := func(title string, eventsByAuthor map[actor][]rawEvent) bool {
+		message := eventMessage(title, func(rawEvent) bool { return true }, eventsByAuthor)
+		if len(eventsByAuthor) == 0 {
+			return len(message) == len(title)
+		}
+		return true
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func (rawEvent) Generate(r *rand.Rand, size int) reflect.Value {
+	event := rawEvent{
+		Actor:     actor{Login: generateString(r, int(r.Int31()%100+1))},
+		Payload:   payload{Action: generateString(r, int(r.Int31()%100+1))},
+		EventType: "PullRequestEvent",
+		CreatedAt: time.Unix(r.Int63(), r.Int63()),
+	}
+	return reflect.ValueOf(event)
+}
+
+// Create a random string
+func generateString(r *rand.Rand, size int) string {
+	res := make([]byte, size)
+	for i := range res {
+		res[i] = byte(r.Int())
+	}
+	return string(res)
 }
