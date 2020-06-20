@@ -50,23 +50,21 @@ func Test_GithubEvents_can_return_a_single_event_PullRequestEvent(t *testing.T) 
 
 }
 
+func TestEventMessageWithNoEvents(t *testing.T) {
+	events := eventMessage(
+		"opened per author",
+		func(rawEvent) bool { return true },
+		map[actor][]rawEvent{})
+	if events != "opened per author: none" {
+		t.Errorf("Unexpected message")
+	}
+}
+
 func TestCounterMessageShouldBePrintedIfAtLeastAPullRequestEventOccured(t *testing.T) {
 	f := func(title string, eventsByAuthor map[actor][]rawEvent) bool {
 		message := eventMessage(title, func(rawEvent) bool { return true }, eventsByAuthor)
 		if len(eventsByAuthor) > 0 {
 			return len(message) > len(title)
-		}
-		return true
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-func TestCounterMessageShouldNotBePrintedIfNoPullRequestEventOccured(t *testing.T) {
-	f := func(title string, eventsByAuthor map[actor][]rawEvent) bool {
-		message := eventMessage(title, func(rawEvent) bool { return true }, eventsByAuthor)
-		if len(eventsByAuthor) == 0 {
-			return len(message) == len(title)
 		}
 		return true
 	}

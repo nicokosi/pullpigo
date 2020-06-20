@@ -66,6 +66,9 @@ func eventMessage(message string, fn eventPredicate, eventsByAuthor map[actor][]
 			fmt.Fprintf(&buffer, "\n\t\t%s: %v", actor.Login, count)
 		}
 	}
+	if buffer.Len() == len(message) {
+		fmt.Fprintf(&buffer, ": none")
+	}
 	return buffer.String()
 }
 
