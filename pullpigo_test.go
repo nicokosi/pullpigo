@@ -6,13 +6,12 @@ import (
 	"testing"
 	"testing/quick"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_GithubEvents_can_return_empty_array(t *testing.T) {
-	events := decodeEvents([]byte("{}"))
-	if len(events) != 0 {
-		t.Errorf("Expecting empty array")
-	}
+	assert.Nil(t, decodeEvents([]byte("{}")))
 }
 
 func Test_GithubEvents_can_return_a_single_event_PullRequestEvent(t *testing.T) {
@@ -34,9 +33,7 @@ func Test_GithubEvents_can_return_a_single_event_PullRequestEvent(t *testing.T) 
 			"public":false,
 			"created_at":"2016-12-01T16:26:43Z"
 		}]`))
-	if len(events) != 1 {
-		t.Errorf("Expecting single event")
-	}
+
 	expectedCreatedAt, _ := time.Parse(time.RFC3339, "2016-12-01T16:26:43Z")
 	expected := rawEvent{
 		Actor:     actor{Login: "alice"},
@@ -44,10 +41,7 @@ func Test_GithubEvents_can_return_a_single_event_PullRequestEvent(t *testing.T) 
 		EventType: "PullRequestEvent",
 		CreatedAt: expectedCreatedAt,
 	}
-	if events[0] != expected {
-		t.Errorf("Unexpected event")
-	}
-
+	assert.Equal(t, []rawEvent{expected}, events)
 }
 
 func TestEventMessageWithNoEvents(t *testing.T) {
