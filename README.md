@@ -1,24 +1,22 @@
 # pullpigo ![CI badge](https://github.com/nicokosi/pullpigo/workflows/CI/badge.svg)
 
-Pullpigo is a command-line that displays Pull Request statistics for GitHub repositories.
+Pullpigo is a command-line that displays Pull Request counters for GitHub repositories.
 
-## Build
+## Pre-requisite
 
-    go build pullpigo.go
+Install the [`go command`](https://golang.org/cmd/go/).
+
+## Install
+
+    go install github.com/nicokosi/pullpigo
 
 ## Run
 
-Via the [`go command`](https://golang.org/cmd/go/):
+    pullpigo --repo=nicokosi/pullpigo
 
-    go run pullpigo.go --repo=nicokosi/pullpigo
+For instance, here is an output example for the GitHub repository <https://github.com/vidal-community/atom-jaxb>:
 
-Or via the executable previously generated:
-
-    ./pullpigo --repo=nicokosi/pullpigo
-
-For instance, here is an output example for the GitHub repository https://github.com/vidal-community/atom-jaxb:
-
-    ./pullpigo --repo=vidal-community/atom-jaxb
+    pullpigo --repo=vidal-community/atom-jaxb
     GitHub repository 'vidal-community/atom-jaxb'
     Pull requests
         opened per author
@@ -30,14 +28,10 @@ For instance, here is an output example for the GitHub repository https://github
 
 The available command options can be listed this way:
 
-    ./pullpigo --help
+    pullpigo --help
 
 ## Code
 
-After code changes, format the code:
-
-    go fmt
-
-Run tests:
-
-    go test
+* run a command: `go run pullpigo.go --repo=nicokosi/pullpigo`
+* run the tests: `go test`
+* format the code: `go fmt`
