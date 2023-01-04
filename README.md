@@ -1,4 +1,4 @@
-# pullpigo ![CI badge](https://github.com/nicokosi/pullpigo/workflows/CI/badge.svg)
+# pullpigo ![CI badge](https://github.com/nicokosi/pullpigo/workflows/CI/badge.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/nicokosi/pullpigo)](https://goreportcard.com/report/github.com/nicokosi/pullpigo)
 
 Pullpigo is a command-line that displays Pull Request counters for GitHub repositories.
 
