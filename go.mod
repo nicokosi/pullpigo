@@ -1,6 +1,6 @@
 module github.com/nicokosi/pullpigo
 
-go 1.17
+go 1.22
 
 require github.com/stretchr/testify v1.8.4
 
