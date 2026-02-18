@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
+
 	"net/http"
 	"os"
 	"time"
@@ -99,7 +100,7 @@ func githubEvents(config config) []rawEvent {
 			panic(getErr)
 		}
 		defer resp.Body.Close()
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			panic(err)
 		}
