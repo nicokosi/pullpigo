@@ -2,7 +2,7 @@ module github.com/nicokosi/pullpigo
 
 go 1.26
 
-toolchain go1.26.6
+toolchain go1.27.1
 
 require github.com/stretchr/testify v1.11.1
 
